@@ -66,6 +66,9 @@ create table if not exists public.fastprintgrow_app_state (
   data jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
+
+grant usage on schema public to service_role;
+grant select, insert, update, delete on public.fastprintgrow_app_state to service_role;
 ```
 
 Then add these environment variables locally and in Vercel:
