@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Building2 } from "lucide-react";
 import BrandLogo from "../components/BrandLogo";
 
@@ -14,6 +14,15 @@ export default function SignupPage() {
     notes: "",
   });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+
+    if (email) {
+      setForm((current) => ({ ...current, email }));
+    }
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

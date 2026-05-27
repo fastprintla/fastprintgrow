@@ -38,7 +38,7 @@ export default function LoginPage() {
     });
 
     const rawResponse = await response.text();
-    let data: { error?: string; message?: string; magicLink?: string } = {};
+    let data: { error?: string; message?: string; magicLink?: string; signupUrl?: string } = {};
 
     try {
       data = rawResponse ? JSON.parse(rawResponse) : {};
@@ -49,6 +49,10 @@ export default function LoginPage() {
     setSending(false);
 
     if (!response.ok) {
+      if (response.status === 404 && data.signupUrl) {
+        window.location.href = data.signupUrl;
+        return;
+      }
       setError(data.error || "Could not create login link.");
       return;
     }

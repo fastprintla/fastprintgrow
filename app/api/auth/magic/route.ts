@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createUserSessionToken, getUserCookieName, hashMagicToken } from "../../../lib/auth";
-import { newId, publicUser, readDb, writeDb } from "../../../lib/db";
-import { getPlanConfig, normalizePlan } from "../../../lib/plans";
+import { publicUser, readDb, writeDb } from "../../../lib/db";
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token") || "";
@@ -16,29 +15,7 @@ export async function GET(request: NextRequest) {
   let user = db.users.find((candidate) => candidate.email === magicLink.email);
 
   if (!user) {
-    const plan = normalizePlan("free");
-    const planConfig = getPlanConfig(plan);
-    user = {
-      id: newId("user"),
-      fullName: "",
-      companyName: "",
-      phoneNumber: "",
-      email: magicLink.email,
-      passwordHash: "",
-      industry: "",
-      notes: "",
-      plan,
-      creditsRemaining: planConfig.creditTotal,
-      creditsTotal: planConfig.creditTotal,
-      chargedLeadIds: [],
-      shopifyOrderNumber: "",
-      paymentStatus: "pending",
-      active: true,
-      createdAt: new Date().toISOString(),
-      lastLoginAt: new Date().toISOString(),
-      totalSearches: 0,
-    };
-    db.users.push(user);
+    return NextResponse.redirect(new URL(`/signup?email=${encodeURIComponent(magicLink.email)}`, request.url));
   }
 
   if (!user.active) {

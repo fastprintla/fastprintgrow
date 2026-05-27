@@ -19,6 +19,19 @@ export async function POST(request: NextRequest) {
 
   const token = createMagicToken();
   const db = await readDb();
+  const user = db.users.find((candidate) => candidate.email === email);
+
+  if (!user) {
+    return NextResponse.json(
+      { error: "No account found for this email. Please create an account first.", signupUrl: `/signup?email=${encodeURIComponent(email)}` },
+      { status: 404 },
+    );
+  }
+
+  if (!user.active) {
+    return NextResponse.json({ error: "This account has been deactivated." }, { status: 403 });
+  }
+
   db.magicLinks.push({
     id: newId("magic"),
     email,
