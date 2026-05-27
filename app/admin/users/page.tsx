@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import BrandLogo from "../../components/BrandLogo";
 import type { PlanId } from "../../lib/plans";
 
 type AdminUser = {
@@ -122,8 +123,8 @@ export default function AdminUsersPage() {
     <main className="min-h-screen bg-[#f5f7fb] px-4 py-8 text-[#172033] sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#3a6ea5]">FastLead AI</p>
-          <h1 className="text-2xl font-bold">Registered Users</h1>
+          <BrandLogo size="sm" />
+          <h1 className="mt-4 text-2xl font-bold">Registered Users</h1>
         </div>
         <a className="rounded-md bg-[#183b56] px-4 py-2 text-sm font-bold text-white" href="/admin">
           Admin Search

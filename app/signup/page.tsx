@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Building2, UserPlus } from "lucide-react";
+import { Building2 } from "lucide-react";
+import BrandLogo from "../components/BrandLogo";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -41,14 +42,9 @@ export default function SignupPage() {
   return (
     <main className="min-h-screen bg-[#f5f7fb] px-4 py-8 text-[#172033]">
       <section className="mx-auto max-w-2xl rounded-lg border border-[#d8dfeb] bg-white p-6 shadow-sm">
-        <div className="mb-6 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-[#183b56] text-white">
-            <UserPlus size={22} />
-          </div>
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#3a6ea5]">FastLead AI</p>
-            <h1 className="text-2xl font-bold">Create Account</h1>
-          </div>
+        <div className="mb-6">
+          <BrandLogo />
+          <h1 className="mt-5 text-2xl font-bold">Create Account</h1>
         </div>
 
         <form className="grid gap-4 sm:grid-cols-2" onSubmit={submit}>

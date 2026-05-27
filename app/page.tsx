@@ -1,4 +1,5 @@
-import { Check, Lock, Mail, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, Lock, Mail, Search, ShieldCheck } from "lucide-react";
+import BrandLogo from "./components/BrandLogo";
 
 const plans = [
   {
@@ -48,15 +49,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f7fb] text-[#172033]">
       <section className="border-b border-[#d8dfeb] bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-[#183b56] text-white">
-              <Sparkles size={22} />
-            </div>
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#3a6ea5]">FastLead AI</p>
-              <h1 className="text-2xl font-bold sm:text-3xl">Local Business Lead Finder</h1>
-            </div>
-          </div>
+          <BrandLogo />
           <div className="flex flex-col gap-2 sm:flex-row">
             <a className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#183b56] px-4 text-sm font-bold text-white" href="/login">
               <Mail size={17} />

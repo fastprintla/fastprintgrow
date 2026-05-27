@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   ArrowUpRight,
@@ -15,6 +15,7 @@ import {
   Star,
 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import BrandLogo from "../components/BrandLogo";
 
 type Lead = {
   id: string;
@@ -456,7 +457,7 @@ export default function AdminPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `fastlead-ai-admin-${businessType}-${zipCode}.csv`;
+    link.download = `fastprintgrow-admin-${businessType}-${zipCode}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -478,16 +479,12 @@ export default function AdminPage() {
     return (
       <main className="grid min-h-screen place-items-center bg-[#f5f7fb] px-4 text-[#172033]">
         <section className="w-full max-w-md rounded-lg border border-[#d8dfeb] bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-[#183b56] text-white">
+          <div className="mb-6">
+            <BrandLogo />
+            <h1 className="mt-5 flex items-center gap-2 text-2xl font-bold">
               <Lock size={21} aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#3a6ea5]">
-                FastLead AI
-              </p>
-              <h1 className="text-2xl font-bold">Admin Access</h1>
-            </div>
+              Admin Access
+            </h1>
           </div>
 
           <form className="space-y-4" onSubmit={handleLogin}>
@@ -528,15 +525,13 @@ export default function AdminPage() {
       <section className="border-b border-[#d8dfeb] bg-white">
         <div className="flex w-full flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-[#183b56] text-white">
-              <ShieldCheck size={22} aria-hidden="true" />
-            </div>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#3a6ea5]">
-                FastLead AI
+              <BrandLogo />
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-[#3a6ea5]">
+                FPG Admin
               </p>
               <h1 className="text-2xl font-bold sm:text-3xl">
-                Admin Mode — Full Lead Access
+                Admin Mode - Full Lead Access
               </h1>
               <div className="mt-2 inline-flex items-center rounded-md bg-[#edf7f4] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[#1f7a5c]">
                 Up to {adminMaxLeads.toLocaleString()} admin leads
@@ -774,7 +769,7 @@ export default function AdminPage() {
                   >
                     <span className="block font-bold text-[#172033]">{item.businessType}</span>
                     <span className="text-[#5f7188]">
-                      {item.zipCode} · {item.radiusMiles} miles · {item.resultLimit} results
+                      {item.zipCode} 路 {item.radiusMiles} miles 路 {item.resultLimit} results
                     </span>
                     <span className="mt-1 block text-xs text-[#8794a5]">
                       {new Date(item.timestamp).toLocaleString()}
@@ -863,7 +858,7 @@ export default function AdminPage() {
             <>
               <div className="flex flex-col gap-3 border-b border-[#d8dfeb] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm font-semibold text-[#52647b]">
-                  Page {currentPage} of {totalPages} · Showing {currentPageLeads.length} of {leads.length}
+                  Page {currentPage} of {totalPages} 路 Showing {currentPageLeads.length} of {leads.length}
                 </p>
                 <div className="flex gap-2">
                   <button

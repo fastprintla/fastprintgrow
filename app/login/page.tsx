@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Mail, Send } from "lucide-react";
+import { Send } from "lucide-react";
+import BrandLogo from "../components/BrandLogo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -59,14 +60,9 @@ export default function LoginPage() {
   return (
     <main className="grid min-h-screen place-items-center bg-[#f5f7fb] px-4 text-[#172033]">
       <section className="w-full max-w-md rounded-lg border border-[#d8dfeb] bg-white p-6 shadow-sm">
-        <div className="mb-6 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-lg bg-[#183b56] text-white">
-            <Mail size={21} />
-          </div>
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#3a6ea5]">FastLead AI</p>
-            <h1 className="text-2xl font-bold">Email Login</h1>
-          </div>
+        <div className="mb-6">
+          <BrandLogo />
+          <h1 className="mt-5 text-2xl font-bold">Email Login</h1>
         </div>
 
         <p className="mb-5 rounded-md bg-[#edf7f4] p-3 text-sm font-semibold text-[#1f7a5c]">

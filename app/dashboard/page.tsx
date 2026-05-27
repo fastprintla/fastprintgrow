@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Download, LogOut, Mail, Search, Star, X } from "lucide-react";
+import BrandLogo from "../components/BrandLogo";
 
 type Lead = {
   id: string;
@@ -321,8 +322,8 @@ export default function DashboardPage() {
       <header className="border-b border-[#d8dfeb] bg-white px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#3a6ea5]">FastLead AI</p>
-            <h1 className="text-2xl font-bold">Lead Dashboard</h1>
+            <BrandLogo />
+            <h1 className="mt-4 text-2xl font-bold">Lead Dashboard</h1>
             <p className="text-sm text-[#5f7188]">{user?.email}</p>
           </div>
           <div className="grid gap-2 text-sm sm:grid-cols-2 lg:flex lg:items-center">

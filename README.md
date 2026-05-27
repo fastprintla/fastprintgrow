@@ -1,6 +1,6 @@
-# FastLead AI
+# fastprintgrow
 
-FastLead AI is a simple SaaS MVP for finding local business leads with Google Places, lead credits, CSV export, public email lookup, saved leads, search history, and admin user management.
+fastprintgrow is a simple SaaS MVP for finding local business leads with Google Places, lead credits, CSV export, public email lookup, saved leads, search history, and admin user management.
 
 API keys and admin secrets stay server-side in Next.js API routes.
 
@@ -44,7 +44,7 @@ npm run dev
 
 ## Login
 
-FastLead AI uses passwordless email login.
+fastprintgrow uses passwordless email login.
 
 - Go to `/login`.
 - Enter the same email used during Shopify checkout.

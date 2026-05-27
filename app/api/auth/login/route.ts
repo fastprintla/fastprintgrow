@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   const magicLink = `${getBaseUrl(request)}/api/auth/magic?token=${token}`;
 
   if (process.env.NODE_ENV !== "production" || !process.env.SMTP_HOST) {
-    console.log(`[FastLead AI] Magic login link for ${email}: ${magicLink}`);
+    console.log(`[fastprintgrow] Magic login link for ${email}: ${magicLink}`);
   }
 
   return NextResponse.json({
