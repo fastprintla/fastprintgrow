@@ -127,7 +127,7 @@ export default function DashboardPage() {
   }, [businessType, leads, location, searchDate]);
 
   async function loadAccount() {
-    const response = await fetch("/api/auth/me", { cache: "no-store" });
+    const response = await fetch("/api/auth/me", { cache: "no-store", credentials: "same-origin" });
     if (!response.ok) {
       window.location.href = "/login";
       return;
@@ -142,7 +142,7 @@ export default function DashboardPage() {
   }
 
   async function loadHistory() {
-    const response = await fetch("/api/user/history", { cache: "no-store" });
+    const response = await fetch("/api/user/history", { cache: "no-store", credentials: "same-origin" });
     if (response.ok) {
       const data = (await response.json()) as { history: HistoryItem[] };
       setHistory(data.history);
@@ -150,7 +150,7 @@ export default function DashboardPage() {
   }
 
   async function loadSavedLeads() {
-    const response = await fetch("/api/user/saved-leads", { cache: "no-store" });
+    const response = await fetch("/api/user/saved-leads", { cache: "no-store", credentials: "same-origin" });
     if (response.ok) {
       const data = (await response.json()) as { savedLeads: Array<{ leadId: string }> };
       setSavedLeadIds(new Set(data.savedLeads.map((lead) => lead.leadId)));
@@ -186,11 +186,16 @@ export default function DashboardPage() {
     try {
       const response = await fetch("/api/leads", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ businessType, location, radiusMiles, quantity: requestedQuantity }),
         signal: controller.signal,
       });
       const data = (await response.json()) as { leads?: Lead[]; error?: string };
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
       if (!response.ok) throw new Error(data.error || "Search failed.");
       setLeads(data.leads || []);
       setSearchDate(new Date().toISOString());
@@ -248,6 +253,7 @@ export default function DashboardPage() {
       try {
         const response = await fetch("/api/emails", {
           method: "POST",
+          credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leads: [{ id: lead.id, website: lead.website }] }),
         });
@@ -279,6 +285,7 @@ export default function DashboardPage() {
   async function saveLead(lead: Lead) {
     const response = await fetch("/api/user/saved-leads", {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ lead }),
     });
@@ -293,6 +300,7 @@ export default function DashboardPage() {
   async function downloadCsv() {
     await fetch("/api/user/export-history", {
       method: "POST",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ exportType: "dashboard_csv", resultCount: leads.length }),
     }).catch((exportError) => console.error("Could not save export history", exportError));
@@ -309,7 +317,7 @@ export default function DashboardPage() {
   }
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
     window.location.href = "/login";
   }
 
