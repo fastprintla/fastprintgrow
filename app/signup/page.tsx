@@ -14,6 +14,7 @@ export default function SignupPage() {
     notes: "",
   });
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -27,21 +28,36 @@ export default function SignupPage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSubmitting(true);
 
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const data = (await response.json()) as { error?: string };
+      const rawResponse = await response.text();
+      let data: { error?: string } = {};
 
-    if (!response.ok) {
-      setError(data.error || "Signup failed.");
-      return;
+      try {
+        data = rawResponse ? JSON.parse(rawResponse) : {};
+      } catch {
+        data = { error: rawResponse || "Signup returned an invalid response." };
+      }
+
+      if (!response.ok) {
+        setError(data.error || "Signup failed.");
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (signupError) {
+      setError(signupError instanceof Error ? signupError.message : "Signup failed.");
+    } finally {
+      setSubmitting(false);
     }
-
-    window.location.href = "/dashboard";
   }
 
   function updateField(field: keyof typeof form, value: string) {
@@ -90,9 +106,13 @@ export default function SignupPage() {
             </div>
           ) : null}
 
-          <button className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#183b56] px-4 text-sm font-bold text-white sm:col-span-2" type="submit">
+          <button
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-[#183b56] px-4 text-sm font-bold text-white disabled:bg-[#7890a3] sm:col-span-2"
+            disabled={submitting}
+            type="submit"
+          >
             <Building2 size={18} />
-            Create Account
+            {submitting ? "Creating Account" : "Create Account"}
           </button>
         </form>
       </section>
