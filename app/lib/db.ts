@@ -105,6 +105,10 @@ const DB_PATH = process.env.FASTLEAD_DB_PATH ||
   (process.env.VERCEL
     ? path.join("/tmp", "data", "fastlead-db.json")
     : path.join(process.cwd(), "data", "fastlead-db.json"));
+const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, "");
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_STATE_TABLE = "fastprintgrow_app_state";
+const SUPABASE_STATE_ID = "main";
 const EMPTY_DB: FastLeadDb = {
   users: [],
   searchHistory: [],
@@ -113,21 +117,7 @@ const EMPTY_DB: FastLeadDb = {
   magicLinks: [],
 };
 
-async function ensureDbFile() {
-  await mkdir(path.dirname(DB_PATH), { recursive: true });
-
-  try {
-    await readFile(DB_PATH, "utf8");
-  } catch {
-    await writeFile(DB_PATH, JSON.stringify(EMPTY_DB, null, 2));
-  }
-}
-
-export async function readDb(): Promise<FastLeadDb> {
-  await ensureDbFile();
-  const raw = (await readFile(DB_PATH, "utf8")).replace(/^\uFEFF/, "");
-  const parsed = JSON.parse(raw) as Partial<FastLeadDb>;
-
+function normalizeDb(parsed: Partial<FastLeadDb>): FastLeadDb {
   return {
     users: (parsed.users || []).map((user) => ({
       ...user,
@@ -161,7 +151,105 @@ export async function readDb(): Promise<FastLeadDb> {
   };
 }
 
+function hasSupabaseConfig() {
+  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
+}
+
+function supabaseHeaders(extra?: HeadersInit) {
+  return {
+    apikey: SUPABASE_SERVICE_ROLE_KEY || "",
+    Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY || ""}`,
+    "Content-Type": "application/json",
+    ...extra,
+  };
+}
+
+function supabaseTableUrl(query = "") {
+  if (!SUPABASE_URL) {
+    throw new Error("SUPABASE_URL is not configured.");
+  }
+
+  return `${SUPABASE_URL}/rest/v1/${SUPABASE_STATE_TABLE}${query}`;
+}
+
+async function readSupabaseDb(): Promise<FastLeadDb> {
+  const response = await fetch(supabaseTableUrl(`?id=eq.${SUPABASE_STATE_ID}&select=data&limit=1`), {
+    cache: "no-store",
+    headers: supabaseHeaders(),
+  });
+
+  if (response.status === 404) {
+    throw new Error(`Supabase table '${SUPABASE_STATE_TABLE}' does not exist. Run the setup SQL from README.md.`);
+  }
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Supabase read failed: ${message}`);
+  }
+
+  const rows = (await response.json()) as Array<{ data?: Partial<FastLeadDb> }>;
+
+  if (!rows[0]?.data) {
+    const localDb = await readLocalDbFromFile();
+    const initialDb = localDb || normalizeDb(EMPTY_DB);
+    await writeSupabaseDb(initialDb);
+    return initialDb;
+  }
+
+  return normalizeDb(rows[0].data);
+}
+
+async function writeSupabaseDb(db: FastLeadDb) {
+  const response = await fetch(supabaseTableUrl("?on_conflict=id"), {
+    method: "POST",
+    headers: supabaseHeaders({ Prefer: "resolution=merge-duplicates" }),
+    body: JSON.stringify({
+      id: SUPABASE_STATE_ID,
+      data: db,
+      updated_at: new Date().toISOString(),
+    }),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Supabase write failed: ${message}`);
+  }
+}
+
+async function ensureDbFile() {
+  await mkdir(path.dirname(DB_PATH), { recursive: true });
+
+  try {
+    await readFile(DB_PATH, "utf8");
+  } catch {
+    await writeFile(DB_PATH, JSON.stringify(EMPTY_DB, null, 2));
+  }
+}
+
+async function readLocalDbFromFile(): Promise<FastLeadDb | null> {
+  try {
+    const raw = (await readFile(DB_PATH, "utf8")).replace(/^\uFEFF/, "");
+    return normalizeDb(JSON.parse(raw) as Partial<FastLeadDb>);
+  } catch {
+    return null;
+  }
+}
+
+export async function readDb(): Promise<FastLeadDb> {
+  if (hasSupabaseConfig()) {
+    return readSupabaseDb();
+  }
+
+  await ensureDbFile();
+  return (await readLocalDbFromFile()) || normalizeDb(EMPTY_DB);
+}
+
 export async function writeDb(db: FastLeadDb) {
+  if (hasSupabaseConfig()) {
+    await writeSupabaseDb(db);
+    return;
+  }
+
   await mkdir(path.dirname(DB_PATH), { recursive: true });
   await writeFile(DB_PATH, JSON.stringify(db, null, 2));
 }

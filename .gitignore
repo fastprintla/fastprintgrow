@@ -9,6 +9,7 @@ dist/
 .env*.local
 data/fastlead-db.json
 data/*.json
+tsconfig.tsbuildinfo
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

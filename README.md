@@ -22,6 +22,9 @@ ADMIN_MAX_LEADS=1000
 MAGIC_LINK_SECRET=
 APP_BASE_URL=http://localhost:3000
 
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+
 STARTER_SHOPIFY_URL=
 GROWTH_SHOPIFY_URL=
 PRO_SHOPIFY_URL=
@@ -52,6 +55,27 @@ FASTPRINTLA GROW uses passwordless email login.
 - Clicking the magic link creates the user if needed, logs them in, and loads their plan and credits.
 
 SMTP variables are reserved for a future real email provider.
+
+## Supabase Storage
+
+FASTPRINTLA GROW can use Supabase for persistent production data. Create this table in the Supabase SQL Editor before deploying:
+
+```sql
+create table if not exists public.fastprintgrow_app_state (
+  id text primary key,
+  data jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+```
+
+Then add these environment variables locally and in Vercel:
+
+```bash
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_secret_service_role_key
+```
+
+If Supabase is configured and the Supabase table is empty, the app will seed it from the local JSON database once. Keep `SUPABASE_SERVICE_ROLE_KEY` server-side only.
 
 ## Plans and Credits
 
