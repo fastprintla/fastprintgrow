@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "fastprintgrow",
+  title: "FASTPRINTLA GROW",
   description: "Local business finder powered by Google Places",
 };
 

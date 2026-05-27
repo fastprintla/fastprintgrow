@@ -1,6 +1,6 @@
-# fastprintgrow
+# FASTPRINTLA GROW
 
-fastprintgrow is a simple SaaS MVP for finding local business leads with Google Places, lead credits, CSV export, public email lookup, saved leads, search history, and admin user management.
+FASTPRINTLA GROW is a simple SaaS MVP for finding local business leads with Google Places, lead credits, CSV export, public email lookup, saved leads, search history, and admin user management.
 
 API keys and admin secrets stay server-side in Next.js API routes.
 
@@ -44,7 +44,7 @@ npm run dev
 
 ## Login
 
-fastprintgrow uses passwordless email login.
+FASTPRINTLA GROW uses passwordless email login.
 
 - Go to `/login`.
 - Enter the same email used during Shopify checkout.

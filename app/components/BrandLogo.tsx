@@ -15,7 +15,7 @@ export default function BrandLogo({ size = "md" }: BrandLogoProps) {
       />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#1f7a5c]">FPG</p>
-        <p className={`${textSize} font-black leading-none text-[#172033]`}>fastprintgrow</p>
+        <p className={`${textSize} font-black leading-none text-[#172033]`}>FASTPRINTLA GROW</p>
       </div>
     </div>
   );
